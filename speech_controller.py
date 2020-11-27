@@ -179,9 +179,8 @@ def how_are_you(user_id):
 #Получает данные о погоде в заданном городе
 def get_weather_in(s_city):
     city_id = 0
-    appid = "4d66e5e7d8c13d6f2a97648fb83dad43"
     try:
-        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ appid)
+        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ data.OPENWEATHEMAP_ID)
         data = res.json()
         conditions = "Погодные условия ☁️: " + str(data['weather'][0]['description'])
         temp = "Температура 🌡: " + str(int(data['main']['temp']) - 273)
