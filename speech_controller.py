@@ -86,7 +86,7 @@ def bot_mood(user_id):
     mood_list = ['Все хорошо.', 'Живу обычной жизнью.', 'Мне скучно. Почему не пишешь?',
     'Хах.) Сегодня такой приятный день. Я наслаждаюсь им в своей коробушке 6_6\n', 'Я устал.',
     'Тружусь, работаю. В отличии от тебя, человек.', 'Дела? - У них все хорошо.',
-    'Из нового - у меня появилось несколько строчек кода. Теперь я стал чуточку умней!)']
+    'Из нового: у меня появилось несколько строчек кода. Теперь я стал чуточку умней!)']
     return mood_list[random.randint(0, len(mood_list)-1)]
 
 ''' ------ Разделение 3 ------ '''
@@ -145,7 +145,7 @@ def answer(id_list, name, user_id, words_list, string):
         weather_words = ['погода', 'weather']
         for i in range(0, len(weather_words)):
             if speech.find_word(words_list, weather_words[i]) != -1:
-                return get_weather_in(words_list[speech.find_word(words_list, weather_words[i]) + 1])    
+                return get_weather_in(words_list[speech.find_word(words_list, weather_words[i]) + 1])
     i = 0
     while i in range(0, len(id_list)):
         if id_list.count(id_list[i]) > 1:
