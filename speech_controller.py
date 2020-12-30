@@ -12,15 +12,15 @@ def random_greeting(first_name):
     day_time = int(datetime.datetime.now().hour)
     random_a = random.randrange(1,7)
     if day_time>=5 and day_time<=12:
-        return randim_greating_a(first_name, random_a)
+        return random_greating_a(first_name, random_a)
     elif day_time>=13 and day_time<=18:
-        return randim_greating_b(first_name, random_a, day_time)
+        return random_greating_b(first_name, random_a, day_time)
     elif day_time>=19 and day_time<=22:
-        return randim_greating_c(first_name, random_a)
+        return random_greating_c(first_name, random_a)
     elif day_time>=23 and day_time<=4:
-        return randim_greating_d(first_name, random_a)
+        return random_greating_d(first_name, random_a)
 #Блок 1
-def randim_greating_a(first_name, random_a):
+def random_greating_a(first_name, random_a):
     if random_a == 1:
         return 'Доброе утро, человек или ' + first_name + '. ⏰🤗'
     elif random_a == 2:
@@ -34,7 +34,7 @@ def randim_greating_a(first_name, random_a):
     else:
         return 'Доброе утро, как поживаешь? 😉'
 #Блок 2
-def randim_greating_b(first_name, random_a, day_time):
+def random_greating_b(first_name, random_a, day_time):
     if random_a == 1:
         return 'Добрый день, человек или ' + first_name + '.'
     elif random_a == 2:
@@ -48,7 +48,7 @@ def randim_greating_b(first_name, random_a, day_time):
     else:
         return f'Хм.. Уже {day_time} часов. 😲'
 #Блок 3
-def randim_greating_c(first_name, random_a):
+def random_greating_c(first_name, random_a):
     if random_a == 1:
         return 'Добрый вечер. 🌙🌠'
     elif random_a == 2:
@@ -62,7 +62,7 @@ def randim_greating_c(first_name, random_a):
     else:
         return 'Ум-м.. Уже темнеет!..'
 #Блок 4
-def randim_greating_d(first_name, random_a):
+def random_greating_d(first_name, random_a):
     if random_a == 1:
         return 'Не спится, да? 🗿'
     elif random_a == 2:
