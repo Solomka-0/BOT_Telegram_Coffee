@@ -5,6 +5,7 @@ import random
 import data
 import ast
 import math
+import json
 
 import requests
 from yandex import Translater
@@ -33,19 +34,18 @@ class Subs(object): # Класс отвечает за сохранение ли
         self.filename = filename
         try:
             array = []
-            file = open(self.filename + '.txt')
-            for line in file:
-                array.append(ast.literal_eval(line))
-            file.close()
+            with open(self.filename + '.json') as file:
+                for element in self.list:
+                     array.append(json.load(element, file))
+                file.close()
             self.list = array
         except:
             self.list = []
     def saving(self): # Перезаписывает(сохраняет) лист
-        file = open(self.filename + '.txt', 'w')
-        for element in self.list:
-             file.write(str(element))
-             file.write('\n')
-        file.close()
+        with open(self.filename + '.json', 'w') as file:
+            for element in self.list:
+                 json.dump(element, file)
+            file.close()
     def find_value(self, key, value): # Находит элемент словаря в листе
         for element in self.list:
             if element[key] == value:
@@ -168,6 +168,9 @@ def repeat_all_messages(message):
     except:
         pass
 
+def delete_markup(message):
+    BOT.edit_message_text(chat_id = message.chat.id, message_id = message.message_id, text = message.text)
+
 @BOT.callback_query_handler(lambda call: ("like" in call.data) or ("dislike" in call.data))
 def call_est(call):
     global rating
@@ -179,7 +182,7 @@ def call_est(call):
         # Сохранение
         rating.withdraw('chat_id', id)
         rating.add({'chat_id':id, 'rating':rank})
-        BOT.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=call.message.text)
+        delete_markup(call.message)
     elif 'like' in call.data:
         # Обработка
         call.data = call.data.replace('like','')
@@ -188,23 +191,27 @@ def call_est(call):
         # Сохранение
         rating.withdraw('chat_id', id)
         rating.add({'chat_id':id, 'rating':rank + 1})
-        BOT.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=call.message.text)
+        delete_markup(call.message)
 
 @BOT.callback_query_handler(lambda call: call.data=="call_subscribe")
 def call_subscribe(call):
     subscribe(call.message)
+    delete_markup(call.message)
 
 @BOT.callback_query_handler(lambda call: call.data=="call_unsubscribe")
 def call_unsubscribe(call):
     unsubscribe(call.message)
+    delete_markup(call.message)
 
 @BOT.callback_query_handler(lambda call: call.data=="call_info")
 def call_info(call):
     info(call.message)
+    delete_markup(call.message)
 
 @BOT.callback_query_handler(lambda call: call.data=="call_find_couple")
 def call_find_couple(call):
     find_couple(call.message)
+    delete_markup(call.message)
 
 subs = Subs('subscribers') # Создает лист с подписчиками
 rating = Subs('rating') # Создает отдельный лист с рейтингом

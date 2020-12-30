@@ -6,9 +6,6 @@ import speech
 from yandex import Translater
 from bs4 import BeautifulSoup as BS
 
-''' ------ Константы ------ '''
-TRANSLATOR_KEY = 'trnsl.1.1.20200526T170830Z.7ce26f262af4291b.95b5cfeae019e090f02fbd902cdd615a4b1ac7db'
-howre_u_list = {}
 
 ''' ------ Функциии ------ '''
 def random_greeting(first_name):
@@ -97,48 +94,6 @@ def random_parting():
     elif random_a == 5:
         return 'Удачи тебе!'
 
-def answer_answer_3(question):
-    if question == 1:
-        return 'Наверное, потому что не произошло ничего плохого.'
-    if question == 2:
-        return 'Ты видишь что-то необычное?'
-    if question == 3:
-        return 'Ты мне мало пишешь! Больше!'
-    if question == 5:
-        return 'Ну знаешь, как это - обрабатывать запросы днями и ночами?'
-    if question == 6:
-        return 'Потому что ты ленивый человек.'
-    else:
-        return 'Не понял вопроса'
-
-def random_answer_3(user_id):
-    global howre_u_list
-    random_a = random.randrange(1,9)
-    if random_a == 1:
-        howre_u_list[user_id] = 1
-        return 'Все хорошо.'
-    if random_a == 2:
-        howre_u_list[user_id] = 2
-        return 'Живу обычной жизнью.'
-    if random_a == 3:
-        howre_u_list[user_id] = 3
-        return 'Мне скучно. Почему не пишешь?'
-    if random_a == 4:
-        howre_u_list[user_id] = -1
-        return 'Хах.) Сегодня такой приятный день. Я наслаждаюсь им в своей коробушке 6_6\n'
-    if random_a == 5:
-        howre_u_list[user_id] = 5
-        return 'Я устал.'
-    if random_a == 6:
-        howre_u_list[user_id] = 6
-        return 'Тружусь, работаю. В отличии от тебя, человек.'
-    if random_a == 7:
-        howre_u_list[user_id] = -1
-        return 'Дела? - У них все хорошо.'
-    if random_a == 8:
-        howre_u_list[user_id] = -1
-        return 'Из нового - у меня появилось несколько строчек кода. Теперь я стал чуточку умней!)'
-
 ''' ------ Разделение 2 ------ '''
 
 def random_bool():
@@ -169,23 +124,35 @@ def find_city(text):
     return text[first_positition:second_position]
 
 def how_are_you(user_id):
-    global howre_u_list
-    if user_id in howre_u_list:
-        return 'Ты это уже спрашивал сегодня ("Как дела?").'
-    else:
-        return random_answer_3(user_id)
+    random_a = random.randrange(1,9)
+    if random_a == 1:
+        return 'Все хорошо.'
+    if random_a == 2:
+        return 'Живу обычной жизнью.'
+    if random_a == 3:
+        return 'Мне скучно. Почему не пишешь?'
+    if random_a == 4:
+        return 'Хах.) Сегодня такой приятный день. Я наслаждаюсь им в своей коробушке 6_6\n'
+    if random_a == 5:
+        return 'Я устал.'
+    if random_a == 6:
+        return 'Тружусь, работаю. В отличии от тебя, человек.'
+    if random_a == 7:
+        return 'Дела? - У них все хорошо.'
+    if random_a == 8:
+        return 'Из нового - у меня появилось несколько строчек кода. Теперь я стал чуточку умней!)'
 
 ''' ------ Разделение 3 ------ '''
 #Получает данные о погоде в заданном городе
 def get_weather_in(s_city):
     city_id = 0
     try:
-        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ data.OPENWEATHEMAP_ID)
-        data = res.json()
-        conditions = "Погодные условия ☁️: " + str(data['weather'][0]['description'])
-        temp = "Температура 🌡: " + str(int(data['main']['temp']) - 273)
-        min_temp = "Влажность 💧: " + str(data['main']['humidity']) + '%'
-        max_temp = "Максимальная температура ⬆: " + str(int(data['main']['temp_max']) - 273)
+        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ data.OPENWEATHEMAP_KEY)
+        w_data = res.json()
+        conditions = "Погодные условия ☁️: " + str(w_data['weather'][0]['description'])
+        temp = "Температура 🌡: " + str(int(w_data['main']['temp']) - 273)
+        min_temp = "Влажность 💧: " + str(w_data['main']['humidity']) + '%'
+        max_temp = "Максимальная температура ⬆: " + str(int(w_data['main']['temp_max']) - 273)
         result = conditions + '\n' + temp + '\n' + min_temp + '\n' + max_temp
     except Exception as e:
         result = "Найден город-исключение: " + s_city
@@ -217,7 +184,7 @@ def translator(string, words):
     for i in range(0, len(words)):
         if (words[i] == 'перевод') or (words[i] == 'переведи') or (words[i] == 'translate') or (words[i] == 'translator'):
             string = string.replace(words[i], '')
-    tr.set_key(TRANSLATOR_KEY)
+    tr.set_key(data.TRANSLATOR_KEY)
     tr.set_text(string)
     tr.set_from_lang('ru')
     tr.set_to_lang('en')
@@ -226,7 +193,6 @@ def translator(string, words):
 ''' ------ Основная функция ------ '''
 
 def answer(id_list, name, user_id, words_list, string):
-    global howre_u_list
     if 10 in id_list:
         if speech.find_word(words_list, 'погода') != -1:
             pos = speech.find_word(words_list, 'погода')
@@ -262,8 +228,6 @@ def answer(id_list, name, user_id, words_list, string):
             sentence = sentence + ' ' + how_are_you(user_id)
         elif id_list[i] == 4:
             sentence = sentence + ' ' + help_message(name)
-        elif (id_list[i] == 5) and (user_id in howre_u_list):
-            sentence = sentence + ' ' + answer_answer_3(howre_u_list[user_id])
-        elif (id_list[i] == 5) and (user_id not in howre_u_list):
+        elif id_list[i] == 5:
             sentence = sentence + 'Что почему? Ты о чем?'
     return sentence
