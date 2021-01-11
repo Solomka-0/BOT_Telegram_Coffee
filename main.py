@@ -6,6 +6,7 @@ import data
 import ast
 import math
 import json
+import time
 
 import requests
 from yandex import Translater
@@ -33,18 +34,14 @@ class Subs(object): # Класс отвечает за сохранение ли
     def __init__(self, filename):
         self.filename = filename
         try:
-            array = []
             with open(self.filename + '.json') as file:
-                for element in self.list:
-                     array.append(json.load(element, file))
+                self.list = json.load(file).copy()
                 file.close()
-            self.list = array
         except:
             self.list = []
     def saving(self): # Перезаписывает(сохраняет) лист
         with open(self.filename + '.json', 'w') as file:
-            for element in self.list:
-                 json.dump(element, file)
+            json.dump(self.list, file)
             file.close()
     def find_value(self, key, value): # Находит элемент словаря в листе
         for element in self.list:
@@ -154,8 +151,16 @@ def start(message):
     start_markup.add(start_button)
     BOT.send_message(message.chat.id, ANSWERS['start_msg'], reply_markup = start_markup)
 
+
 @BOT.message_handler(content_types = ['text']) # Обрабатывает текстовые сообщения
 def repeat_all_messages(message):
+    global user_variables
+    BOT.send_chat_action(message.chat.id, "typing")
+
+    print(user_variables.find_value('chat_id', message.chat.id))
+    if not user_variables.find_value('chat_id', message.chat.id):
+        user_variables.add({'chat_id':message.chat.id, 'typing':True})
+
     request = message.text #Сообщение от пользователя
     request = request.lower()
     words = [] # Массив со словами из сообщения
@@ -164,7 +169,10 @@ def repeat_all_messages(message):
     words = speech.del_spaces(words) # Удаление пустых элементов в массиве
     id_w_list = speech.words_in_ids(words) # Определяет ключевые слова в массиве со словами
     try:
-        BOT.send_message(message.chat.id, speech_controller.answer(id_w_list, message.chat.first_name, message.chat.id, words, request))
+        answer = speech_controller.answer(id_w_list, message.chat.first_name, message.chat.id, words, request)
+        if user_variables.find_value('chat_id', message.chat.id)['typing'] == True:
+            time.sleep(len(answer)/25)
+        BOT.send_message(message.chat.id, answer)
     except:
         pass
 
@@ -213,7 +221,9 @@ def call_find_couple(call):
     find_couple(call.message)
     delete_markup(call.message)
 
+user_variables = Subs('user_variables') # Создает отдельный лист с переменными данными для пользователей
 subs = Subs('subscribers') # Создает лист с подписчиками
 rating = Subs('rating') # Создает отдельный лист с рейтингом
+
 if __name__ == '__main__':
     BOT.polling(none_stop=True)

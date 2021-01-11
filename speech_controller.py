@@ -94,7 +94,7 @@ def bot_mood(user_id):
 def get_weather_in(s_city):
     city_id = 0
     try:
-        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ data.OPENWEATHEMAP_KEY)
+        res = requests.get('http://api.openweathermap.org/data/2.5/weather?q=' + s_city + ',{state}&lang=ru&appid='+ data.OPENWEATHERMAP_KEY)
         w_data = res.json()
         conditions = "Погодные условия ☁️: " + str(w_data['weather'][0]['description'])
         temp = "Температура 🌡: " + str(int(w_data['main']['temp']) - 273)
